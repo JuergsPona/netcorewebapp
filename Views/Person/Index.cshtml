@@ -1,0 +1,83 @@
+﻿@model IEnumerable<FamilyTree.Models.Person>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<select class="dropdown">
+    @foreach (var item in Model)
+{
+        <option value="value">@Html.DisplayFor(modelItem => item.FullName)</option>
+}
+</select>
+
+@*@Html.DropDownListFor()*@
+
+
+@*@{
+    Html.DropDownList("Person", new List<SelectListItem> {
+    foreach (var item in Model)
+    {
+        new SelectListItem { Text=item.FullName, Value=item.PersonId.ToString() }
+    }
+    })
+}*@
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsDeceased)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Mother)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Father)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsParent)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsDeceased)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Mother)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Father)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsParent)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.PersonId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.PersonId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.PersonId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
