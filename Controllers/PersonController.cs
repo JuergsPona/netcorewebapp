@@ -21,26 +21,59 @@ namespace FamilyTree.Controllers
         // GET: Person
         public async Task<IActionResult> Index()
         {
-            return View(await _context.People.Where<Person>(x => x.Mother != null || x.Father != null).ToListAsync());
+            List<Person> list = new List<Person>();
+            Person person = new Person();
+            list = await _context.People.Where<Person>(x => x.Mother != null || x.Father != null).ToListAsync();
+            ViewBag.selectPerson = person;
+            ViewBag.listofitems = list;
+            return View();
         }
 
         // GET: Person/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(Person selectedPerson, int id = 0)
         {
-            if (id == null)
+            PersonViewModel person = new PersonViewModel();
+
+            if (selectedPerson.PersonId == 0 && id == 0)
             {
                 return NotFound();
             }
-
-            var person = await _context.People
-                .FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
+            else if (selectedPerson.PersonId == 0 && id != 0)
+            {
+                person = await GetDataForPerson(id);
+                return View(person);
+            }
+            else if (selectedPerson.PersonId != 0)
+            {
+                person = await GetDataForPerson(selectedPerson.PersonId);
+                return View(person);
+            }
+            else
             {
                 return NotFound();
             }
-
-            return View(person);
         }
+
+        private async Task<PersonViewModel> GetDataForPerson(int id)
+        {
+            var personObject = await _context.People
+                .FirstOrDefaultAsync(m => m.PersonId == id);
+            if (personObject == null)
+            {
+                return null;
+            }
+
+            PersonViewModel person = new PersonViewModel();
+            person.person = personObject;
+            person.parents = new List<Person>();
+            person.parents.Add(await _context.People
+                .FirstOrDefaultAsync(m => m.FullName == person.person.Mother));
+            person.parents.Add(await _context.People
+                .FirstOrDefaultAsync(m => m.FullName == person.person.Father));
+
+            return person;
+        }
+
 
         // GET: Person/Create
         public IActionResult Create()

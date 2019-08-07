@@ -1,4 +1,4 @@
-﻿@model FamilyTree.Models.Person
+﻿@model FamilyTree.Models.PersonViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -9,40 +9,60 @@
 <div>
     <h4>Person</h4>
     <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.FullName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.FullName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsDeceased)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsDeceased)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Mother)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Mother)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Father)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Father)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.IsParent)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.IsParent)
-        </dd>
-    </dl>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.person.FullName)
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    Status
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.person.IsDeceased)
+                </td>
+            </tr>
+
+            @foreach (var item in Model.parents)
+            {
+                @if (item != null)
+                {
+                    <tr>
+                        <td>
+                            Parent
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Details", "Person", new { selectedPerson = item, id = item.PersonId }, null)">
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </a>
+                        </td>
+                    </tr>
+                }
+            }
+
+            @if (Model.person.IsParent == IsParent.True)
+            {
+                <tr>
+                    <td>
+                        Parental Role
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.person.ParentalRole)
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.PersonId">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
